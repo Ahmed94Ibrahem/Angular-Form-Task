@@ -1,0 +1,19 @@
+<form [formGroup]="form">
+  <label>
+    Name:
+    <input formControlName="name" type="text" />
+  </label>
+
+  <label>
+    Email:
+    <input formControlName="email" type="email" />
+  </label>
+
+  <label>
+    Subscribe:
+    <input formControlName="subscribe" type="checkbox" />
+  </label>
+
+  <button (click)="undo()" [disabled]="!(canUndo$ | async)">Undo</button>
+  <button (click)="redo()" [disabled]="!(canRedo$ | async)">Redo</button>
+</form>
