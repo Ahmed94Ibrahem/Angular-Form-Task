@@ -1,0 +1,70 @@
+:host {
+  .formWrapper {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #040820;
+    form {
+      padding: 3rem;
+      background: white;
+      border-radius: 4px;
+      width: 30rem;
+      .formInput {
+        margin-bottom: 1rem;
+        &:last-child {
+          margin-bottom: 0;
+        }
+        label {
+          display: block;
+          font-size: 16px;
+          font-family: sans-serif;
+          font-weight: 400;
+          color: #040820;
+          margin-bottom: 4px;
+        }
+        input {
+          padding: 12px;
+          border-radius: 4px;
+          border: 1px solid #040820;
+          width: 100%;
+        }
+        select {
+          padding: 12px;
+          border-radius: 4px;
+          border: 1px solid #040820;
+          width: 100%;
+          cursor: pointer;
+        }
+      }
+      .toggleInput {
+        margin-bottom: 1rem;
+        input {
+          cursor: pointer;
+          padding: 12px;
+        }
+      }
+      .actionBtns {
+        display: flex;
+        gap: 8px;
+        button {
+          padding: 12px 16px;
+          width: 100px;
+          border: none;
+          background-color: #040820;
+          color: white;
+          cursor: pointer;
+          border-radius: 6px;
+          &:disabled {
+            opacity: 0.4;
+          }
+          &.redo {
+            background-color: transparent;
+            color: #040820;
+            border: 2px solid #040820;
+          }
+        }
+      }
+    }
+  }
+}

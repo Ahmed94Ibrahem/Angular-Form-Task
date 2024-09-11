@@ -1,57 +1,71 @@
 import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { RouterOutlet } from '@angular/router';
-import { select, Store, StoreModule } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { redo, undo, updateForm } from './store/actions/form.actions';
-import {
-  selectCanRedo,
-  selectCanUndo,
-  selectFormValue,
-} from './store/selectors/form.selector';
 
-import { FormGroup, FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { formReducer } from './store/reducers/form.reducer';
-import { BrowserModule } from '@angular/platform-browser';
+export interface Model {
+  name: string;
+  email: string;
+  acceptTerms: boolean;
+  conuntry: string;
+}
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [
-    RouterOutlet,
-    BrowserModule,
-    ReactiveFormsModule,
-    StoreModule.forRoot({ form: formReducer }),
-  ],
+  imports: [RouterOutlet, ReactiveFormsModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
 export class AppComponent {
   form: FormGroup;
-  formValue$: Observable<any>;
-  canUndo$: Observable<boolean>;
-  canRedo$: Observable<boolean>;
+  undoStack: any[] = [];
+  redoStack: any[] = [];
+  canUndo = false;
+  canRedo = false;
 
-  constructor(private fb: FormBuilder, private store: Store) {
+  constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
-      name: [''],
+      userName: [''],
       email: [''],
-      subscribe: [false],
+      phoneNumber: [''],
+      acceptTerms: [false],
+      country: [''],
     });
 
-    this.formValue$ = this.store.pipe(select(selectFormValue));
-    this.canUndo$ = this.store.pipe(select(selectCanUndo));
-    this.canRedo$ = this.store.pipe(select(selectCanRedo));
-
-    this.form.valueChanges.subscribe((value: any) => {
-      this.store.dispatch(updateForm({ formValue: value }));
-    });
+    this.undoStack.push(this.form.value);
   }
 
+  captureState() {
+    const currentState = this.form.value;
+    const lastState = this.undoStack[this.undoStack.length - 1];
+
+    if (JSON.stringify(currentState) !== JSON.stringify(lastState)) {
+      this.undoStack.push({ ...currentState });
+      this.canUndo = this.undoStack.length > 1;
+      this.redoStack = [];
+      this.canRedo = false;
+    }
+  }
   undo() {
-    this.store.dispatch(undo());
-  }
+    if (this.undoStack.length > 1) {
+      const lastState = this.undoStack.pop();
+      this.redoStack.push(lastState);
 
+      const previousState = this.undoStack[this.undoStack.length - 1];
+      this.form.setValue(previousState);
+
+      this.canUndo = this.undoStack.length > 1;
+      this.canRedo = this.redoStack.length > 0;
+    }
+  }
   redo() {
-    this.store.dispatch(redo());
+    if (this.redoStack.length > 0) {
+      const restoredState = this.redoStack.pop();
+      this.undoStack.push(restoredState);
+      this.form.setValue(restoredState);
+
+      this.canUndo = this.undoStack.length > 1;
+      this.canRedo = this.redoStack.length > 0;
+    }
   }
 }

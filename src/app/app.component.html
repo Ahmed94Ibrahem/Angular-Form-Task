@@ -1,19 +1,60 @@
-<form [formGroup]="form">
-  <label>
-    Name:
-    <input formControlName="name" type="text" />
-  </label>
+<div class="formWrapper">
+  <form [formGroup]="form">
+    <div class="formInput">
+      <label for="userName">User Name:</label>
+      <input
+        id="userName"
+        type="text"
+        formControlName="userName"
+        (blur)="captureState()"
+        placeholder="Enter Username"
+      />
+    </div>
 
-  <label>
-    Email:
-    <input formControlName="email" type="email" />
-  </label>
+    <div class="formInput">
+      <label for="email">Email:</label>
+      <input
+        id="email"
+        type="email"
+        formControlName="email"
+        (blur)="captureState()"
+        placeholder="Enter Email"
+      />
+    </div>
 
-  <label>
-    Subscribe:
-    <input formControlName="subscribe" type="checkbox" />
-  </label>
+    <div class="formInput">
+      <label for="phoneNumber">Phone Number:</label>
+      <input
+        id="phoneNumber"
+        type="text"
+        formControlName="phoneNumber"
+        (blur)="captureState()"
+        placeholder="Enter Phone Number"
+      />
+    </div>
 
-  <button (click)="undo()" [disabled]="!(canUndo$ | async)">Undo</button>
-  <button (click)="redo()" [disabled]="!(canRedo$ | async)">Redo</button>
-</form>
+    <div class="toggleInput">
+      <input
+        type="checkbox"
+        formControlName="acceptTerms"
+        (blur)="captureState()"
+      />
+      <label> Accept Terms </label>
+    </div>
+
+    <div class="formInput">
+      <label for="country">Country:</label>
+      <select id="country" formControlName="country" (blur)="captureState()">
+        <option value="" disabled selected>Select Country</option>
+        <option value="usa">USA</option>
+        <option value="canada">Canada</option>
+        <option value="uk">UK</option>
+      </select>
+    </div>
+
+    <div class="actionBtns">
+      <button class="undo" (click)="undo()" [disabled]="!canUndo">Undo</button>
+      <button class="redo" (click)="redo()" [disabled]="!canRedo">Redo</button>
+    </div>
+  </form>
+</div>
